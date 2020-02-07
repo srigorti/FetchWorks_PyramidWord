@@ -1,24 +1,29 @@
+from flask import Flask, json
 import collections
 
-def pyramidWord(word) -> bool:
-  # If the word is empty
-  if not word:
-    return True
-  # Count the number of occurences of each alphabet in word
-  counter = collections.Counter(word)
+app = Flask(__name__)
 
-  countList = [i for i in counter.values()]
+@app.route('/pyramidword/<word>', methods = ['GET', 'POST'])
+def pyramidWord(word):
+    # If the word is empty
+    if not word:
+        return json.dumps(True)
 
-  # operations on sets are efficient than on Lists
-  countSet = set(countList)
-  # If there are no duplicate counts occuring
-  if len(countSet) == len(countList):
-    # check if consecutive numbers are present in the list
-    return sorted(countSet) == list(range(min(countSet), max(countSet)+1))
+    # Count the number of occurences of each alphabet in word
+    counter = collections.Counter(word)
+    countList = [i for i in counter.values()]
 
-  else:
-    return False
+    if len(countList) == 1 and countList[0] == 1:
+        return json.dumps(True)
+    else:
+        return json.dumps(False)
 
+    # operations on sets are efficient than on Lists
+    countSet = set(countList)
 
-
-print(pyramidWord("Bbanannna"))
+    # If there are no duplicate counts occuring
+    if len(countSet) == len(countList):
+        # check if consecutive numbers are present in the list
+        return json.dumps(sorted(countSet) == list(range(min(countSet), max(countSet)+1)))
+    else:
+        return json.dumps(False)
